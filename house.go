@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"time"
+
+	graphql "github.com/hasura/go-graphql-client"
 )
 
 type QueryResponse struct {
@@ -13,6 +15,7 @@ type Viewer struct {
 	Name   string `json:"name"`
 	UserId string `json:"userId"`
 	Homes  []Home `json:"homes"`
+	Home   Home   `json:"home"`
 }
 type PreviousMeterData struct {
 	Power           float64 `json:"power"`
@@ -59,10 +62,12 @@ type CurrentSubscription struct {
 }
 
 type PriceInfo struct {
-	CurrentPriceInfo CurrentPriceInfo `json:"current"`
+	CurrentPriceInfo Price   `json:"current"`
+	Today            []Price `json:"today"`
+	Tomorrow         []Price `json:"tomorrow"`
 }
 
-type CurrentPriceInfo struct {
+type Price struct {
 	Level    string    `json:"level"`
 	Total    float64   `json:"total"`
 	Energy   float64   `json:"energy"`
@@ -112,7 +117,40 @@ func (ctx *TibberClient) GetHomes() (QueryResponse, error) {
 		return queryResponse, err
 	}
 
-	json.Unmarshal(data, &queryResponse)
+	jsonErr := json.Unmarshal(data, &queryResponse)
 
-	return queryResponse, nil
+	return queryResponse, jsonErr
+}
+
+func (ctx *TibberClient) GetPriceInfo(homeId string) (CurrentSubscription, error) {
+	var query struct {
+		Viewer struct {
+			Home struct {
+				Id                  string `graphql:"id"`
+				CurrentSubscription struct {
+					Id        string `graphql:"id"`
+					ValidFrom string `graphql:"validFrom"`
+					ValidTo   string `graphql:"validTo"`
+				} `graphql:"currentSubscription"`
+			} `graphql:"home(id: $id)"`
+		} `graphql:"viewer"`
+	}
+
+	variables := map[string]interface{}{
+		"id": graphql.ID(homeId),
+	}
+
+	dataRaw, err := ctx.apiClient.QueryRaw(context.Background(), query, variables)
+	if err != nil {
+		return CurrentSubscription{}, err
+	}
+
+	var result QueryResponse
+	jsonErr := json.Unmarshal(dataRaw, &result)
+
+	if jsonErr != nil {
+		return CurrentSubscription{}, jsonErr
+	}
+
+	return result.Viewer.Home.CurrentSubscription, jsonErr
 }

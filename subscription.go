@@ -62,7 +62,16 @@ func (ctx *TibberClient) StartSubscription(houseId string, handler SubscriptionH
 	_, err := ctx.wsClient.Subscribe(sub, variables, func(message []byte, err error) error {
 		data := subscriptionResponse{}
 
-		jsonutil.UnmarshalGraphQL(message, &data)
+		if err != nil {
+			return handler(LiveMeasurement{}, err)
+		}
+
+		jsonerror := jsonutil.UnmarshalGraphQL(message, &data)
+
+		if (jsonerror != nil || data.LiveMeasurement == LiveMeasurement{}) {
+			return handler(LiveMeasurement{}, jsonerror)
+		}
+
 		return handler(data.LiveMeasurement, err)
 	})
 
