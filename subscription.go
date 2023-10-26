@@ -17,15 +17,15 @@ type LiveMeasurement struct {
 	Timestamp                      time.Time `json:"timestamp"`
 	Power                          int       `json:"power"`
 	MinPower                       int       `json:"minPower"`
-	AveragePower                   float32   `json:"averagePower"`
-	MaxPower                       float32   `json:"maxPower"`
-	LastMeterConsumption           float32   `json:"lastMeterConsumption"`
-	LastMeterProduction            float32   `json:"lastMeterProduction"`
-	AccumulatedConsumption         float32   `json:"accumulatedConsumption"`
-	AccumulatedProduction          float32   `json:"accumulatedProduction"`
-	AccumulatedCost                float32   `json:"accumulatedCost"`
-	AccumulatedConsumptionLastHour float32   `json:"accumulatedConsumptionLastHour"`
-	AccumulatedProductionLastHour  float32   `json:"accumulatedProductionLastHour"`
+	AveragePower                   float64   `json:"averagePower"`
+	MaxPower                       float64   `json:"maxPower"`
+	LastMeterConsumption           float64   `json:"lastMeterConsumption"`
+	LastMeterProduction            float64   `json:"lastMeterProduction"`
+	AccumulatedConsumption         float64   `json:"accumulatedConsumption"`
+	AccumulatedProduction          float64   `json:"accumulatedProduction"`
+	AccumulatedCost                float64   `json:"accumulatedCost"`
+	AccumulatedConsumptionLastHour float64   `json:"accumulatedConsumptionLastHour"`
+	AccumulatedProductionLastHour  float64   `json:"accumulatedProductionLastHour"`
 	Currency                       string    `json:"currency"`
 }
 
