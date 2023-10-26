@@ -1,4 +1,4 @@
-package tibberclient
+package tibber
 
 import (
 	"fmt"
