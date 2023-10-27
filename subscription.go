@@ -14,9 +14,10 @@ type subscriptionResponse struct {
 }
 
 type LiveMeasurement struct {
+	HomeId                         string    `json:"homeId"`
 	Timestamp                      time.Time `json:"timestamp"`
-	Power                          int       `json:"power"`
-	MinPower                       int       `json:"minPower"`
+	Power                          float64   `json:"power"`
+	MinPower                       float64   `json:"minPower"`
 	AveragePower                   float64   `json:"averagePower"`
 	MaxPower                       float64   `json:"maxPower"`
 	LastMeterConsumption           float64   `json:"lastMeterConsumption"`
@@ -37,17 +38,17 @@ func (ctx *TibberClient) StartSubscription(homeId string, outputChannel chan<- L
 	var sub struct {
 		LiveMeasurement struct {
 			Timestamp                      time.Time `graphql:"timestamp"`
-			Power                          int       `graphql:"power"`
-			MinPower                       int       `graphql:"minPower"`
-			AveragePower                   float32   `graphql:"averagePower"`
-			MaxPower                       float32   `graphql:"maxPower"`
-			LastMeterConsumption           float32   `graphql:"lastMeterConsumption"`
-			LastMeterProduction            float32   `graphql:"lastMeterProduction"`
-			AccumulatedConsumption         float32   `graphql:"accumulatedConsumption"`
-			AccumulatedProduction          float32   `graphql:"accumulatedProduction"`
-			AccumulatedCost                float32   `graphql:"accumulatedCost"`
-			AccumulatedConsumptionLastHour float32   `graphql:"accumulatedConsumptionLastHour"`
-			AccumulatedProductionLastHour  float32   `graphql:"accumulatedProductionLastHour"`
+			Power                          float64   `graphql:"power"`
+			MinPower                       float64   `graphql:"minPower"`
+			AveragePower                   float64   `graphql:"averagePower"`
+			MaxPower                       float64   `graphql:"maxPower"`
+			LastMeterConsumption           float64   `graphql:"lastMeterConsumption"`
+			LastMeterProduction            float64   `graphql:"lastMeterProduction"`
+			AccumulatedConsumption         float64   `graphql:"accumulatedConsumption"`
+			AccumulatedProduction          float64   `graphql:"accumulatedProduction"`
+			AccumulatedCost                float64   `graphql:"accumulatedCost"`
+			AccumulatedConsumptionLastHour float64   `graphql:"accumulatedConsumptionLastHour"`
+			AccumulatedProductionLastHour  float64   `graphql:"accumulatedProductionLastHour"`
 			Currency                       string    `graphql:"currency"`
 		} `graphql:"liveMeasurement(homeId: $homeId)"`
 	}
@@ -65,6 +66,7 @@ func (ctx *TibberClient) StartSubscription(homeId string, outputChannel chan<- L
 		jsonerror := jsonutil.UnmarshalGraphQL(message, &data)
 
 		if (jsonerror == nil && data.LiveMeasurement != LiveMeasurement{}) {
+			data.LiveMeasurement.HomeId = homeId
 			outputChannel <- data.LiveMeasurement
 			return nil
 		}
