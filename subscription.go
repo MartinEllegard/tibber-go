@@ -29,12 +29,8 @@ type LiveMeasurement struct {
 	Currency                       string    `json:"currency"`
 }
 
-type SubscriptionHandler func(LiveMeasurement, error) error
-
-func (ctx *TibberClient) StartSubscription(houseId string, handler SubscriptionHandler) error {
-	// get the demo token from the graphiql playground
-
-	if houseId == "" {
+func (ctx *TibberClient) StartSubscription(homeId string, outputChannel chan<- LiveMeasurement) error {
+	if homeId == "" {
 		return graphql.Error{Message: "missing argument houseId"}
 	}
 	log.Println("Trying")
@@ -57,22 +53,23 @@ func (ctx *TibberClient) StartSubscription(houseId string, handler SubscriptionH
 	}
 
 	variables := map[string]interface{}{
-		"homeId": graphql.ID(houseId),
+		"homeId": graphql.ID(homeId),
 	}
 	_, err := ctx.wsClient.Subscribe(sub, variables, func(message []byte, err error) error {
 		data := subscriptionResponse{}
 
 		if err != nil {
-			return handler(LiveMeasurement{}, err)
+			return err
 		}
 
 		jsonerror := jsonutil.UnmarshalGraphQL(message, &data)
 
-		if (jsonerror != nil || data.LiveMeasurement == LiveMeasurement{}) {
-			return handler(LiveMeasurement{}, jsonerror)
+		if (jsonerror == nil && data.LiveMeasurement != LiveMeasurement{}) {
+			outputChannel <- data.LiveMeasurement
+			return nil
 		}
 
-		return handler(data.LiveMeasurement, err)
+		return nil
 	})
 
 	if err != nil {

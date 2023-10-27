@@ -58,13 +58,16 @@ type Features struct {
 }
 
 type CurrentSubscription struct {
+	Id        string    `json:"id"`
+	ValidFrom time.Time `json:"validFrom"`
+	ValidTo   time.Time `json:"validTo"`
 	PriceInfo PriceInfo `json:"priceInfo"`
 }
 
 type PriceInfo struct {
-	CurrentPriceInfo Price   `json:"current"`
-	Today            []Price `json:"today"`
-	Tomorrow         []Price `json:"tomorrow"`
+	Current  Price   `json:"current"`
+	Today    []Price `json:"today"`
+	Tomorrow []Price `json:"tomorrow"`
 }
 
 type Price struct {
@@ -101,6 +104,32 @@ func (ctx *TibberClient) GetHomes() (QueryResponse, error) {
 				} `graphql:"address"`
 				CurrentSubscription struct {
 					Id        string `graphql:"id"`
+					PriceInfo struct {
+						Current struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"current"`
+						Today []struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"today"`
+						Tomorrow []struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"tomorrow"`
+					} `graphql:"priceInfo"`
 					ValidFrom string `graphql:"validFrom"`
 					ValidTo   string `graphql:"validTo"`
 				} `graphql:"currentSubscription "`
@@ -129,6 +158,32 @@ func (ctx *TibberClient) GetPriceInfo(homeId string) (CurrentSubscription, error
 				Id                  string `graphql:"id"`
 				CurrentSubscription struct {
 					Id        string `graphql:"id"`
+					PriceInfo struct {
+						Current struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"current"`
+						Today []struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"today"`
+						Tomorrow []struct {
+							Level    string    `graphql:"level"`
+							Total    float64   `graphql:"total"`
+							Energy   float64   `graphql:"energy"`
+							Tax      float64   `graphql:"tax"`
+							Currency string    `graphql:"currency"`
+							StartsAt time.Time `graphql:"startsAt"`
+						} `graphql:"tomorrow"`
+					} `graphql:"priceInfo"`
 					ValidFrom string `graphql:"validFrom"`
 					ValidTo   string `graphql:"validTo"`
 				} `graphql:"currentSubscription"`
