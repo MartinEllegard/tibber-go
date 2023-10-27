@@ -55,12 +55,14 @@ func CreateTibberClient(token string, agent string) *TibberClient {
 			panic(err)
 		})
 
-	defer wsclient.Close()
-
 	return &TibberClient{
 		token,
 		userAgent,
 		apiClient,
 		wsclient,
 	}
+}
+
+func (ctx *TibberClient) Close() {
+	ctx.wsClient.Close()
 }
