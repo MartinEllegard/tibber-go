@@ -31,7 +31,7 @@ type LiveMeasurement struct {
 
 func (ctx *TibberClient) StartSubscription(homeId string, outputChannel chan<- LiveMeasurement) error {
 	if homeId == "" {
-		return graphql.Error{Message: "missing argument houseId"}
+		return graphql.Error{Message: "missing argument homeId"}
 	}
 	log.Println("Trying")
 	var sub struct {
