@@ -2,7 +2,6 @@ package tibber
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	graphql "github.com/hasura/go-graphql-client"
@@ -50,7 +49,7 @@ func CreateTibberClient(token string, agent string) *TibberClient {
 		}).
 		WithConnectionParams(map[string]interface{}{
 			"token": token,
-		}).WithLog(log.Println).
+		}).
 		OnError(func(sc *graphql.SubscriptionClient, err error) error {
 			panic(err)
 		})

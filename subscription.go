@@ -34,7 +34,7 @@ func (ctx *TibberClient) StartSubscription(homeId string, outputChannel chan<- L
 	if homeId == "" {
 		return graphql.Error{Message: "missing argument homeId"}
 	}
-	log.Println("Trying")
+
 	var sub struct {
 		LiveMeasurement struct {
 			Timestamp                      time.Time `graphql:"timestamp"`
