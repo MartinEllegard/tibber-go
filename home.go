@@ -94,7 +94,10 @@ func (ctx *TibberClient) GetHomes() (QueryResponse, error) {
 				PrimaryHeatingSource string `graphql:"primaryHeatingSource"`
 				HasVentilationSystem string `graphql:"hasVentilationSystem "`
 				MainFuseSize         string `graphql:"mainFuseSize"`
-				Address              struct {
+				Features             struct {
+					RealTimeConsumptionEnabled bool `graphql:"realTimeConsumptionEnabled"`
+				} `graphql:"features"`
+				Address struct {
 					Address    string `graphql:"address1"`
 					City       string `graphql:"city"`
 					PostalCode string `graphql:"postalCode"`
