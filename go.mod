@@ -1,6 +1,6 @@
 module github.com/MartinEllegard/tibber-go
 
-go 1.21.2
+go 1.22.0
 
 require github.com/hasura/go-graphql-client v0.10.0
 
