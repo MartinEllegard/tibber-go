@@ -3,7 +3,7 @@ Go developer module for tibber
 
 ## Roadmap 
 
-### Wokring Features
+### Working Features
     - Getting homes with GetHomes func
     - Getting Price information for specific home with GetPriceInfo func
     - Subscribing to real time consumption websocket using the newer graphql-transport-ws protocol
